@@ -4,13 +4,17 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 
+const router = require("./router/index");
+const errorMiddleware = require("./middlewares/error-middleware.js");
+
 const app = express();
 const PORT = process.env.PORT || 4000;
 
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
-app.use("/", (req, res) => res.send("works"));
+app.use("/api", router);
+app.use(errorMiddleware);
 
 async function startServer() {
   try {
