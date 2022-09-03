@@ -9,7 +9,7 @@ const router = new Router();
 router.post(
   "/registration",
   body("email").isEmail(),
-  body("password").isLength({ min: 4, max: 10 }),
+  body("password").isLength({ min: 4, max: 20 }),
   UserController.registration
 );
 router.post("/login", UserController.login);
