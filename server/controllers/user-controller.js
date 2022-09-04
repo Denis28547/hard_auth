@@ -15,15 +15,11 @@ class UserController {
       const { email, password } = req.body;
       const userData = await userService.registration(email, password);
 
-      res.cookie("refreshToken", userData.refreshToken, {
-        maxAge: 30 * 24 * 60 * 60 * 1000,
-        httpOnly: true,
-      });
-      console.log(res);
+      returnCookies(res, userData);
 
       return res.json(userData);
-    } catch (error) {
-      next(error);
+    } catch (err) {
+      next(err);
     }
   }
 
@@ -32,14 +28,11 @@ class UserController {
       const { email, password } = req.body;
       const userData = await userService.login(email, password);
 
-      res.cookie("refreshToken", userData.refreshToken, {
-        maxAge: 30 * 24 * 60 * 60 * 1000,
-        httpOnly: true,
-      });
+      returnCookies(res, userData);
 
       return res.json(userData);
-    } catch (error) {
-      next(error);
+    } catch (err) {
+      next(err);
     }
   }
 
@@ -49,8 +42,8 @@ class UserController {
       const token = await userService.logout(refreshToken);
       res.clearCookie("refreshToken");
       return res.json(token);
-    } catch (error) {
-      next(error);
+    } catch (err) {
+      next(err);
     }
   }
 
@@ -59,8 +52,8 @@ class UserController {
       const activationLink = req.params.link;
       await userService.activate(activationLink);
       return res.redirect(process.env.CLIENT_URL);
-    } catch (error) {
-      next(error);
+    } catch (err) {
+      next(err);
     }
   }
 
@@ -69,25 +62,29 @@ class UserController {
       const { refreshToken } = req.cookies;
       const userData = await userService.refresh(refreshToken);
 
-      res.cookie("refreshToken", userData.refreshToken, {
-        maxAge: 30 * 24 * 60 * 60 * 1000,
-        httpOnly: true,
-      });
+      returnCookies(res, userData);
 
       return res.json(userData);
-    } catch (error) {
-      next(error);
+    } catch (err) {
+      next(err);
     }
   }
 
   async getAllUsers(req, res) {
     try {
       const allUsers = await userService.getAllUsers();
-      res.json(allUsers);
-    } catch (error) {
-      next(error);
+      return res.json(allUsers);
+    } catch (err) {
+      next(err);
     }
   }
+}
+
+function returnCookies(res, userData) {
+  return res.cookie("refreshToken", userData.refreshToken, {
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    httpOnly: true,
+  });
 }
 
 module.exports = new UserController();

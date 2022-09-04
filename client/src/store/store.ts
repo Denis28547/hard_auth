@@ -2,7 +2,7 @@ import { makeAutoObservable } from "mobx";
 import axios from "axios";
 
 import { IUser } from "../models/IUser";
-import AuthService from "../sevices/AuthService";
+import AuthService from "../services/AuthService";
 import { AuthResponse } from "../models/response/AuthResponse";
 import { API_URL } from "../http";
 
@@ -37,8 +37,8 @@ export default class Store {
   async registration(email: string, password: string) {
     try {
       const response = await AuthService.registration(email, password);
-      localStorage.setItem("token", response.data.accessToken);
       console.log(response);
+      localStorage.setItem("token", response.data.accessToken);
       this.setAuth(true);
       this.setUser(response.data.user);
     } catch (error) {
@@ -62,7 +62,6 @@ export default class Store {
       const response = await axios.get<AuthResponse>(`${API_URL}/refresh`, {
         withCredentials: true,
       });
-      // console.log(response);
       localStorage.setItem("token", response.data.accessToken);
       this.setAuth(true);
       this.setUser(response.data.user);
