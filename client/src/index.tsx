@@ -12,7 +12,11 @@ const store = new Store();
 
 export const Context = createContext<IStore>({ store });
 
-ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+const root = ReactDOM.createRoot(
+  document.getElementById("root") as HTMLElement
+);
+
+root.render(
   <Context.Provider value={{ store }}>
     <App />
   </Context.Provider>
